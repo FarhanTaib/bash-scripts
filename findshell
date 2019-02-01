@@ -37,7 +37,6 @@ search_file(){
 	loaddir
 	local PTN=""
 	local EXT=""
-	local COUNTER=""
 	local FILES=""
 	clear
 	echo "
@@ -45,7 +44,7 @@ search_file(){
 Please provide the pattern which consist of numbers, Example: 987312387
 and the file extension or type, Example: pdf
 
-File sample: SAM-200-[Pattern]-887766-10.[Extension]
+File sample: SAM-200-[Pattern]-88ABC.[Extension]
 -----------------------------------------------------------------------
 "
 	read -r -p "Enter the pattern : " PTN
