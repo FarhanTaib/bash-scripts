@@ -56,7 +56,7 @@ File sample: SAM-200-[Pattern]-88ABC.[Extension]
 	local ARRAY=()
 	while IFS=  read -r -d $'\0'; do
     		ARRAY+=("$REPLY")
-	done < <(find ${DIR1} ${DIR2} ${DIR3} -type f -name "SAM-200-${TRIM_PTN}-887766-10.${TRIM_EXT}" -print0)
+	done < <(find ${DIR1} ${DIR2} ${DIR3} -type f -name "SAM-200-${TRIM_PTN}-88ABC.${TRIM_EXT}" -print0)
 	
 	echo -e "Number\t| Folder" | column -s ',' -t
 	echo -e "----------------"
