@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+###################################################################
+# Script Name	: findshell                                                                                            
+# Purpose	: Example script provide search options and copy 
+#	          file for operator using menus.
+# 		  You can also use this as custom shell
+#		  Put it in /bin/findshell
+#		  chsh --shell /bin/findshell <user_name>
+# License       : license under GPL v3.0                                                                                         
+# Author       	: Mohd Farhan Taib                                                
+# Email         : mohdfarhantaib@gmail.com                                           
+###################################################################
+
+# capture CTRL+C, CTRL+Z and quit singles using the trap
+trap '' SIGINT
+trap '' SIGQUIT
+trap '' SIGTSTP
+
+# Declare the standard dir
+# -> Change below directory according to your requirements.
+loaddir(){
+	DIR1="/apps/wmsasp15/redprairie/wms/les/files/hostin/invoices"
+	DIR2="/rp_invoice/amsb_invoice"
+	DIR3="/rp_invoice/aspl_invoice"
+	TGTDIR="/tmp/" # Or home directory
+}
+ 
+# Display message and pause 
+pause(){
+	local m="$@"
+	echo "$m"
+	read -p "Press [Enter] key to continue..." key
+}
+
+# Search the file
+search_file(){
+	loaddir
+	local PTN=""
+	local EXT=""
+	local COUNTER=""
+	local FILES=""
+	clear
+	echo "
+-----------------------------------------------------------------------
+Please provide the pattern which consist of numbers, Example: 987312387
+and the file extension or type, Example: pdf
+
+File sample: SAM-200-[Pattern]-887766-10.[Extension]
+-----------------------------------------------------------------------
+"
+	read -r -p "Enter the pattern : " PTN
+	local TRIM_PTN=$(echo $PTN | sed 's/[^0-9]*//g')
+	read -r -p "Enter file extension [pdf|xlsx|zip|...] : " EXT
+	local TRIM_EXT=$(echo $EXT | sed 's/[^a-zA-Z]*//g')
+	echo -e "\nFinding the file, please wait...\n"
+	
+	local ARRAY=()
+	while IFS=  read -r -d $'\0'; do
+    		ARRAY+=("$REPLY")
+	done < <(find ${DIR1} ${DIR2} ${DIR3} -type f -name "SAM-200-${TRIM_PTN}-887766-10.${TRIM_EXT}" -print0)
+	
+	echo -e "Number\t| Folder" | column -s ',' -t
+	echo -e "----------------"
+	for KEY in "${!ARRAY[@]}"; do
+		echo -e "$KEY\t| ${ARRAY[$KEY]}" | column -s ',' -t
+	done
+	
+	echo ""
+	read -r -p "Do you want to copy the file? [Y/n] : " YESNO
+	if [ "$YESNO" = "Y" ] || [ "$YESNO" = "y" ]; then
+		local AA=1
+		while [[ "$AA" != "0" ]]; do
+			echo ""
+			read -r -p "Please provide the number based on the table above : " FILENUM
+			if [ ! -z $FILENUM ] && (("$FILENUM" <= "$(echo ${#ARRAY[@]})")); then
+				echo -e "\nCopying the file to home...\n"
+				cp -v $(echo ${ARRAY[$FILENUM]}) $TGTDIR
+				AA=0
+			else
+				echo "Invalid number..."
+			fi
+		done
+	fi 
+}
+ 
+##### Main #####
+
+while :
+do
+	# show menu
+	clear
+	echo "---------------------------------"
+	echo -e "\tM A I N - M E N U"
+	echo "---------------------------------"
+	echo "1. Show current date/time"
+        echo "2. Search file"
+	echo "3. Exit"
+	echo "---------------------------------"
+	read -r -p "Enter your choice [1-3] : " c
+	# take action
+	case $c in
+		1) pause "$(date)";;
+		2) search_file; pause;;
+		3) break;;
+		*) pause "Select between 1 to 3 only";;
+	esac
+done
+
+
+##### End of Script #####
+
