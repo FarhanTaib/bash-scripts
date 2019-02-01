@@ -32,6 +32,13 @@ pause(){
 	read -p "Press [Enter] key to continue..." key
 }
 
+# remove file older then 3 days 
+removeold_file(){
+        loaddir
+        find ${TGTDIR} -type f -name 'INV-100-*-80090-70.*' -mtime +4 -exec echo "=> $(date)" \; -exec rm -v {} \; | tee -a ${TGTDIR}/findshell.log
+}
+
+
 # Search the file
 search_file(){
 	loaddir
@@ -93,15 +100,17 @@ do
 	echo "---------------------------------"
 	echo "1. Show current date/time"
         echo "2. Search file"
-	echo "3. Exit"
+	echo "3. remove older copied file"
+	echo "4. Exit"
 	echo "---------------------------------"
-	read -r -p "Enter your choice [1-3] : " c
+	read -r -p "Enter your choice [1-4] : " c
 	# take action
 	case $c in
 		1) pause "$(date)";;
 		2) search_file; pause;;
-		3) break;;
-		*) pause "Select between 1 to 3 only";;
+		3) removeold_file; pause;;
+		4) break;;
+		*) pause "Select between 1 to 4 only";;
 	esac
 done
 
