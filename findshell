@@ -35,9 +35,8 @@ pause(){
 # remove file older then 3 days 
 removeold_file(){
         loaddir
-        find ${TGTDIR} -type f -name 'INV-100-*-80090-70.*' -mtime +4 -exec echo "=> $(date)" \; -exec rm -v {} \; | tee -a ${TGTDIR}/findshell.log
+        find ${TGTDIR} -type f -name 'SAM-200-*-88ABC.*' -mtime +4 -exec echo "=> $(date)" \; -exec rm -v {} \; | tee -a ${TGTDIR}/findshell.log
 }
-
 
 # Search the file
 search_file(){
