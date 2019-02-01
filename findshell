@@ -19,9 +19,9 @@ trap '' SIGTSTP
 # Declare the standard dir
 # -> Change below directory according to your requirements.
 loaddir(){
-	DIR1="/apps/wmsasp15/redprairie/wms/les/files/hostin/invoices"
-	DIR2="/rp_invoice/amsb_invoice"
-	DIR3="/rp_invoice/aspl_invoice"
+	DIR1="/apps/path_1"
+	DIR2="/apps2/path_2"
+	DIR3="/apps3/path_3"
 	TGTDIR="/tmp/" # Or home directory
 }
  
