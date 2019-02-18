@@ -54,38 +54,43 @@ File sample: SAM-200-[Pattern]-88ABC.[Extension]
 -----------------------------------------------------------------------
 "
 	read -r -p "Enter the pattern : " PTN
+	if [ $PTN = "cancel" ]; then return 0; fi
 	local TRIM_PTN=$(echo $PTN | sed 's/[^0-9]*//g')
 	read -r -p "Enter file extension [pdf|xlsx|zip|...] : " EXT
 	local TRIM_EXT=$(echo $EXT | sed 's/[^a-zA-Z]*//g')
 	echo -e "\nFinding the file, please wait...\n"
-	
+
 	local ARRAY=()
 	while IFS=  read -r -d $'\0'; do
-    		ARRAY+=("$REPLY")
+		ARRAY+=("$REPLY")
 	done < <(find ${DIR1} ${DIR2} ${DIR3} -type f -name "SAM-200-${TRIM_PTN}-88ABC.${TRIM_EXT}" -print0)
-	
+
 	echo -e "Number\t| Folder" | column -s ',' -t
 	echo -e "----------------"
 	for KEY in "${!ARRAY[@]}"; do
 		echo -e "$KEY\t| ${ARRAY[$KEY]}" | column -s ',' -t
 	done
 	
-	echo ""
-	read -r -p "Do you want to copy the file? [Y/n] : " YESNO
-	if [ "$YESNO" = "Y" ] || [ "$YESNO" = "y" ]; then
-		local AA=1
-		while [[ "$AA" != "0" ]]; do
+	if [ ${#ARRAY[@]} -eq 0 ]; then
+		echo -e "\nFile not found"
+	else
+		echo ""
+		read -r -p "Do you want to copy the file? [Y/n] : " YESNO
+		if [ "$YESNO" = "Y" ] || [ "$YESNO" = "y" ]; then
+		    local AA=1
+		    while [[ "$AA" != "0" ]]; do
 			echo ""
 			read -r -p "Please provide the number based on the table above : " FILENUM
 			if [ ! -z $FILENUM ] && (("$FILENUM" <= "$(echo ${#ARRAY[@]})")); then
-				echo -e "\nCopying the file to home...\n"
-				cp -v $(echo ${ARRAY[$FILENUM]}) $TGTDIR
-				AA=0
+			    echo -e "\nCopying the file to home...\n"
+			    cp -v $(echo ${ARRAY[$FILENUM]}) $TGTDIR
 			else
-				echo "Invalid number..."
+			    echo "Invalid number..."
 			fi
-		done
-	fi 
+			AA=0
+		    done
+		fi
+	fi
 }
  
 ##### Main #####
@@ -100,19 +105,21 @@ do
 	echo "1. Show current date/time"
         echo "2. Search file"
 	echo "3. remove older copied file"
-	echo "4. Exit"
+	echo "4. List copied files"
+	echo "5. Exit"
 	echo "---------------------------------"
-	read -r -p "Enter your choice [1-4] : " c
+	read -r -p "Enter your choice [1-5] : " c
 	# take action
 	case $c in
 		1) pause "$(date)";;
 		2) search_file; pause;;
 		3) removeold_file; pause;;
-		4) break;;
-		*) pause "Select between 1 to 4 only";;
+		4) echo -e "\nDirectory: $(pwd $TGTDIR)\n---------------------------------\n";
+           	   ls -l $TGTDIR; pause;;
+		5) break;;
+		*) pause "Select between 1 to 5 only";;
 	esac
 done
 
 
 ##### End of Script #####
-
