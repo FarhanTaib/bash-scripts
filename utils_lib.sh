@@ -1,10 +1,11 @@
 #!/bin/bash
 ###################################################################
-# Script Name	  : utils_lib.sh                                                                                           
-# Purpose	      : My standard bash function library
+# Script Name	: utils_lib.sh                                                                                           
+# Purpose	    : My standard bash function library
 # License       : license under GPL v3.0                                                                                         
 # Author       	: Mohd Farhan Taib                                                
-# Email         : mohdfarhantaib@gmail.com                                           
+# Email         : mohdfarhantaib@gmail.com
+# GitHub        : https://github.com/FarhanTaib  
 ###################################################################
 
 # About:
