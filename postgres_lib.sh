@@ -62,7 +62,7 @@ readonly PG_TOOL_V="PGPASSFILE=$PG_PASS psql -h ${PG_HOST} -U ${PG_USER} -d ${PG
 # Passing parameters "col_name_1,col_name_2,...,col_name_N" "table_name"
 #
 function f_pg_get_lastrowcontent(){
-    f_pg_chkparms "${@}" "2"
+        f_pg_chkparms "${@}" "2"
 	local _columns=${1}
 	local _table_name=${2}
 	eval $PG_TOOL_S<<EOF
@@ -78,7 +78,7 @@ EOF
 # Passing parameters "(col_name_1,col_name_2,...,col_name_N)" "(values)" "table_name"
 #
 function f_pg_add_newrow(){
-    f_pg_chkparms "${@}" "3"
+        f_pg_chkparms "${@}" "3"
 	local _columns=${1}
 	local _values=${2}
 	local _table_name=${3}
@@ -97,7 +97,7 @@ EOF
 # Passing parameters "col_name" "value" "table_name"
 #
 function f_pg_search(){
-    f_pg_chkparms "${@}" "3"
+        f_pg_chkparms "${@}" "3"
 	local _column=${1}
 	local _value=${2}
 	local _table_name=${3}
