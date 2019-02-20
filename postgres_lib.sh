@@ -24,7 +24,7 @@ function f_pg_prechecks(){
         exit 1
     fi
     if [ $(stat -c '%a' $PG_PASS) -ne 600 ]; then
-        printf "[%s] %s ERROR: .pgpass permission is not correct. It must be in 600.\n" "$(date --rfc-3339=seconds)"  "${BASH_SOURCE[0]}"
+        printf "[%s] %s ERROR: .pgpass permission is not correct. It must be in 600 ($PG_PASS).\n" "$(date --rfc-3339=seconds)"  "${BASH_SOURCE[0]}"
         exit 1
     fi
     if [[ -f "$PG_PASS" && $(basename -- "$(readlink -f -- "$PG_PASS")") == ^. ]]; then
@@ -39,6 +39,21 @@ function f_pg_prechecks(){
 }
 f_pg_prechecks
 
+function f_pg_chkparms(){
+    local array=( "$@" )
+    local first_key=(${!array[@]})
+    local last_key=(${#array[-1]})
+    local last_key_val=(${array[-1]})
+    local sum_key=(${#array[@]})
+    local actual_arg_sum=$((${sum_key}-1))
+    if [[ -z "$@" ]]; then
+        printf "[%s] %s ERROR: Function ${FUNCNAME[1]}() requires arguments.\n" "$(date --rfc-3339=seconds)"  "${BASH_SOURCE[0]}"
+        exit 1
+    elif [ $actual_arg_sum -ne $last_key_val ]; then
+        printf "[%s] %s ERROR: Function ${FUNCNAME[1]}() requires $last_key_val arguments.\n" "$(date --rfc-3339=seconds)"  "${BASH_SOURCE[0]}"
+    fi
+}
+
 readonly PG_TOOL_S="PGPASSFILE=$PG_PASS psql -qtAX -h ${PG_HOST} -U ${PG_USER} -d ${PG_DB}"
 readonly PG_TOOL_V="PGPASSFILE=$PG_PASS psql -h ${PG_HOST} -U ${PG_USER} -d ${PG_DB}"
 
@@ -47,6 +62,7 @@ readonly PG_TOOL_V="PGPASSFILE=$PG_PASS psql -h ${PG_HOST} -U ${PG_USER} -d ${PG
 # Passing parameters "col_name_1,col_name_2,...,col_name_N" "table_name"
 #
 function f_pg_get_lastrowcontent(){
+    f_pg_chkparms "${@}" "2"
 	local _columns=${1}
 	local _table_name=${2}
 	eval $PG_TOOL_S<<EOF
@@ -62,6 +78,7 @@ EOF
 # Passing parameters "(col_name_1,col_name_2,...,col_name_N)" "(values)" "table_name"
 #
 function f_pg_add_newrow(){
+    f_pg_chkparms "${@}" "3"
 	local _columns=${1}
 	local _values=${2}
 	local _table_name=${3}
@@ -80,6 +97,7 @@ EOF
 # Passing parameters "col_name" "value" "table_name"
 #
 function f_pg_search(){
+    f_pg_chkparms "${@}" "3"
 	local _column=${1}
 	local _value=${2}
 	local _table_name=${3}
